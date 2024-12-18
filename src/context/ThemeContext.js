@@ -9,6 +9,7 @@ const ThemeContext = createContext({
 
 export function ThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // Check if user has a theme preference in localStorage
@@ -23,6 +24,7 @@ export function ThemeProvider({ children }) {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    setMounted(true);
   }, []);
 
   const toggleDarkMode = () => {
@@ -38,6 +40,11 @@ export function ThemeProvider({ children }) {
       return newValue;
     });
   };
+
+  // Prevent hydration issues
+  if (!mounted) {
+    return <>{children}</>;
+  }
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleDarkMode }}>

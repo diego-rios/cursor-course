@@ -1,21 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { KeyIcon } from '@heroicons/react/24/outline';
 
 export default function ApiPlayground() {
   const [apiKey, setApiKey] = useState('');
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!apiKey.trim()) return;
     
-    // Store the API key in sessionStorage for validation
-    sessionStorage.setItem('api_key_to_validate', apiKey.trim());
-    router.push('/protected-page');
+    try {
+      // Store the API key in sessionStorage for validation
+      sessionStorage.setItem('api_key_to_validate', apiKey.trim());
+      router.push('/protected-page');
+    } catch (error) {
+      console.error('Error storing API key:', error);
+      // You might want to show an error message to the user here
+    }
   };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900">
+        <div className="max-w-[800px] mx-auto p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+            <div className="max-w-md mx-auto text-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900">

@@ -9,12 +9,23 @@ export default function ProtectedPage() {
   const [isValidating, setIsValidating] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [error, setError] = useState(null);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    setMounted(true);
     const validateApiKey = async () => {
       try {
-        const apiKey = sessionStorage.getItem('api_key_to_validate');
+        let apiKey;
+        try {
+          apiKey = sessionStorage.getItem('api_key_to_validate');
+        } catch (e) {
+          console.error('Error accessing sessionStorage:', e);
+          setError('Unable to access session storage');
+          setIsValidating(false);
+          return;
+        }
+
         if (!apiKey) {
           setError('No API key provided');
           setIsValidating(false);
@@ -52,13 +63,36 @@ export default function ProtectedPage() {
       }
     };
 
-    validateApiKey();
-  }, []);
+    if (mounted) {
+      validateApiKey();
+    }
+  }, [mounted]);
 
   const handleBack = () => {
-    sessionStorage.removeItem('api_key_to_validate');
+    try {
+      sessionStorage.removeItem('api_key_to_validate');
+    } catch (e) {
+      console.error('Error clearing sessionStorage:', e);
+    }
     router.push('/playground');
   };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900">
+        <div className="max-w-[800px] mx-auto p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8">
+            <div className="max-w-md mx-auto text-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-gray-900">

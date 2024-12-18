@@ -21,17 +21,25 @@ export default function RootLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // Wait until mounted to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Prevent hydration issues by rendering a simple loading state
   if (!mounted) {
-    return null;
+    return (
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <div className="flex h-screen items-center justify-center bg-white dark:bg-gray-900">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        </body>
+      </html>
+    );
   }
 
   return (
-    <html lang="en">
+    <html lang="en" className="light">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
           <div className="flex h-screen bg-white dark:bg-gray-900">
