@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { KeyIcon } from '@heroicons/react/24/outline';
 
 export default function ApiPlayground() {
@@ -88,9 +89,9 @@ export default function ApiPlayground() {
 
             <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
               Don't have an API key? 
-              <a href="/dashboards" className="text-blue-500 hover:text-blue-600 ml-1">
+              <Link href="/dashboards" className="text-blue-500 hover:text-blue-600 ml-1">
                 Generate one here
-              </a>
+              </Link>
             </div>
           </div>
         </div>
