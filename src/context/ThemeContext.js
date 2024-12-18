@@ -7,16 +7,33 @@ const ThemeContext = createContext({
   toggleDarkMode: () => {},
 });
 
+function getInitialTheme() {
+  if (typeof window === 'undefined') return false;
+  
+  try {
+    // First check localStorage
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) {
+      return storedTheme === 'dark';
+    }
+    
+    // Then check system preference
+    if (window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+  } catch (err) {
+    console.error('Error reading theme preference:', err);
+  }
+  
+  return false;
+}
+
 export function ThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check if user has a theme preference in localStorage
-    const storedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    const shouldBeDark = storedTheme === 'dark' || (!storedTheme && prefersDark);
+    const shouldBeDark = getInitialTheme();
     setIsDarkMode(shouldBeDark);
     
     if (shouldBeDark) {
@@ -24,26 +41,31 @@ export function ThemeProvider({ children }) {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    
     setMounted(true);
   }, []);
 
   const toggleDarkMode = () => {
     setIsDarkMode(prev => {
       const newValue = !prev;
-      if (newValue) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+      try {
+        if (newValue) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        }
+      } catch (err) {
+        console.error('Error saving theme preference:', err);
       }
       return newValue;
     });
   };
 
-  // Prevent hydration issues
+  // Return early if not mounted to prevent hydration mismatch
   if (!mounted) {
-    return <>{children}</>;
+    return <div style={{ visibility: 'hidden' }}>{children}</div>;
   }
 
   return (
