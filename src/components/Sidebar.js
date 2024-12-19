@@ -21,12 +21,12 @@ export default function Sidebar({ isOpen }) {
         <Link href="/dashboards" className="flex items-center gap-2">
           <Image
             src="/logo.svg"
-            alt="Logo"
+            alt="KeyHub Logo"
             width={32}
             height={32}
-            className="dark:invert"
+            className="dark:filter-none"
           />
-          <span className="text-xl font-semibold">tavily</span>
+          <span className="text-xl font-semibold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">KeyHub</span>
         </Link>
       </div>
 
