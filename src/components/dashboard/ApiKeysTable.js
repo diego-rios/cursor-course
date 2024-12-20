@@ -1,6 +1,6 @@
 'use client';
 
-import { EyeIcon, EyeOffIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon as EyeOffIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function ApiKeysTable({
   apiKeys,
