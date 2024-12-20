@@ -6,8 +6,13 @@ import Header from "@/components/Header";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 export default function ClientLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const isDesktop = window.innerWidth >= 1024;
+    setIsSidebarOpen(isDesktop);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -24,12 +29,22 @@ export default function ClientLayout({ children }) {
   return (
     <ThemeProvider>
       <div className="flex h-screen bg-white dark:bg-gray-900">
-        <div className={`transition-all duration-300 ${isSidebarOpen ? 'w-60' : 'w-0'}`}>
-          <Sidebar isOpen={isSidebarOpen} />
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+        
+        <div className={`fixed lg:static lg:flex-shrink-0 z-30 transition-all duration-300 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        } ${isSidebarOpen ? 'w-60' : 'w-0 lg:w-60'}`}>
+          <Sidebar isOpen={true} />
         </div>
-        <div className="flex-1 flex flex-col">
+
+        <div className="flex-1 flex flex-col w-full">
           <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-          <main className="flex-1 overflow-auto bg-[#fafafa] dark:bg-gray-900">
+          <main className="flex-1 overflow-auto bg-[#fafafa] dark:bg-gray-900 p-4">
             {children}
           </main>
         </div>

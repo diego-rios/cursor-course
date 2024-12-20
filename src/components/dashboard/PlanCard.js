@@ -1,36 +1,35 @@
 'use client';
 
-import Link from 'next/link';
-
 export default function PlanCard({ apiKeys }) {
-  return (
-    <div className="rounded-xl p-8 mb-8 bg-gradient-to-r from-rose-200 via-purple-200 to-blue-200 dark:from-rose-900 dark:via-purple-900 dark:to-blue-900">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <div className="text-sm font-medium mb-2">CURRENT PLAN</div>
-          <h2 className="text-3xl font-semibold">Researcher</h2>
-        </div>
-        <Link
-          href="/dashboards"
-          className="bg-white/10 hover:bg-white/20 dark:text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-        >
-          Manage Plan
-        </Link>
-      </div>
+  const totalUsage = apiKeys.reduce((sum, key) => sum + key.usage, 0);
+  const totalLimit = apiKeys.reduce((sum, key) => sum + key.monthly_limit, 0);
+  const usagePercentage = totalLimit > 0 ? (totalUsage / totalLimit) * 100 : 0;
 
-      <div className="mt-8">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
-            <span className="font-medium">API Limit</span>
-            <span className="text-gray-600 text-sm">ⓘ</span>
-          </div>
-          <span className="text-sm">{apiKeys.reduce((acc, key) => acc + key.usage, 0)}/1,000 Requests</span>
+  return (
+    <div className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 text-white">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+        <div>
+          <h2 className="text-lg sm:text-2xl font-semibold mb-1">Researcher</h2>
+          <p className="text-sm sm:text-base opacity-90">
+            Your current plan includes {totalLimit.toLocaleString()} API calls per month
+          </p>
         </div>
-        <div className="h-2 bg-white/30 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-white/80" 
-            style={{ width: `${(apiKeys.reduce((acc, key) => acc + key.usage, 0) / 1000) * 100}%` }}
-          />
+        <div className="flex flex-col sm:items-end">
+          <div className="text-sm sm:text-base font-medium mb-2">API Usage</div>
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-24 sm:w-32 bg-white/30 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-white rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(usagePercentage, 100)}%` }}
+              />
+            </div>
+            <span className="text-sm whitespace-nowrap">
+              {Math.round(usagePercentage)}%
+            </span>
+          </div>
+          <div className="text-xs sm:text-sm mt-1 opacity-90">
+            {totalUsage.toLocaleString()} / {totalLimit.toLocaleString()} calls
+          </div>
         </div>
       </div>
     </div>

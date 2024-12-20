@@ -1,6 +1,6 @@
 'use client';
 
-import { EyeIcon, EyeSlashIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeOffIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function ApiKeysTable({
   apiKeys,
@@ -18,137 +18,104 @@ export default function ApiKeysTable({
   getExpirationStatus,
   isKeyExpired
 }) {
+  if (isLoading) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="animate-pulse space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (apiKeys.length === 0) {
+    return (
+      <div className="p-4 sm:p-6 text-center">
+        <p className="text-gray-600 dark:text-gray-400">No API keys found. Create one to get started.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full">
-        <thead>
-          <tr className="text-left text-sm border-b dark:border-gray-700">
-            <th className="px-6 py-4 font-medium">NAME</th>
-            <th className="px-6 py-4 font-medium">USAGE</th>
-            <th className="px-6 py-4 font-medium">KEY</th>
-            <th className="px-6 py-4 font-medium">EXPIRES</th>
-            <th className="px-6 py-4 font-medium">OPTIONS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {isLoading ? (
-            <tr>
-              <td colSpan="5" className="px-6 py-8 text-center">
-                <div className="flex items-center justify-center text-gray-500">
-                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Loading API keys...
+    <div className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="grid grid-cols-12 gap-4 p-4 sm:p-6 text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50">
+        <div className="col-span-4 sm:col-span-3">NAME</div>
+        <div className="col-span-6 sm:col-span-5">API KEY</div>
+        <div className="hidden sm:block sm:col-span-2">USAGE</div>
+        <div className="col-span-2">EXPIRES</div>
+      </div>
+      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        {apiKeys.map((key) => (
+          <div key={key.id} className="grid grid-cols-12 gap-4 p-4 sm:p-6 items-center text-sm">
+            <div className="col-span-4 sm:col-span-3">
+              {editingKey === key.id ? (
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveEdit(key.id);
+                    if (e.key === 'Escape') setEditingKey(null);
+                  }}
+                  className="w-full px-2 py-1 border rounded dark:bg-gray-700 dark:border-gray-600"
+                  autoFocus
+                />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">{key.name}</span>
+                  <button
+                    onClick={() => startEditing(key)}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <PencilIcon className="h-4 w-4" />
+                  </button>
                 </div>
-              </td>
-            </tr>
-          ) : apiKeys.length === 0 ? (
-            <tr>
-              <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                No API keys yet. Create one to get started.
-              </td>
-            </tr>
-          ) : (
-            apiKeys.map((key) => {
-              const expStatus = getExpirationStatus(key.expires_at);
-              return (
-                <tr key={key.id} className={`border-b dark:border-gray-700 ${
-                  isKeyExpired(key.expires_at) ? 'opacity-50' : ''
-                }`}>
-                  <td className="px-6 py-4">
-                    {editingKey === key.id ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-                        />
-                        <button
-                          onClick={() => saveEdit(key.id)}
-                          className="text-green-500 hover:text-green-600"
-                        >
-                          Save
-                        </button>
-                        <button
-                          onClick={() => setEditingKey(null)}
-                          className="text-gray-500 hover:text-gray-600"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        {key.name}
-                        <button
-                          onClick={() => startEditing(key)}
-                          className="p-1 text-gray-400 hover:text-gray-600"
-                        >
-                          <PencilIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">{key.usage}</td>
-                  <td className="px-6 py-4 font-mono">
-                    <div className="flex items-center gap-2">
-                      {visibleKeys.has(key.id) ? (
-                        <span className="text-gray-600">{key.key}</span>
-                      ) : (
-                        <span>•••••••••••••••••••••••••</span>
-                      )}
-                      <button
-                        onClick={() => copyToClipboard(key.key)}
-                        className="text-blue-500 hover:text-blue-600"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={expStatus.class}>{expStatus.text}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => toggleKeyVisibility(key.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600"
-                        title={visibleKeys.has(key.id) ? "Hide key" : "View key"}
-                      >
-                        {visibleKeys.has(key.id) ? (
-                          <EyeSlashIcon className="h-5 w-5" />
-                        ) : (
-                          <EyeIcon className="h-5 w-5" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => initiateDelete(key)}
-                        className="p-2 text-gray-400 hover:text-gray-600"
-                        title="Delete key"
-                      >
-                        <TrashIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+              )}
+            </div>
+            <div className="col-span-6 sm:col-span-5">
+              <div className="flex items-center gap-2">
+                <code className="font-mono text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  {visibleKeys.has(key.id) ? key.key : '••••••••••••••••'}
+                </code>
+                <button
+                  onClick={() => toggleKeyVisibility(key.id)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {visibleKeys.has(key.id) ? (
+                    <EyeOffIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4" />
+                  )}
+                </button>
+                {visibleKeys.has(key.id) && (
+                  <button
+                    onClick={() => copyToClipboard(key.key)}
+                    className="text-xs text-blue-500 hover:text-blue-600"
+                  >
+                    Copy
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="hidden sm:block sm:col-span-2 text-gray-600 dark:text-gray-400">
+              {key.usage.toLocaleString()} / {key.monthly_limit.toLocaleString()}
+            </div>
+            <div className="col-span-2 flex items-center justify-between gap-2">
+              <span className={getExpirationStatus(key.expires_at).class}>
+                {getExpirationStatus(key.expires_at).text}
+              </span>
+              <button
+                onClick={() => initiateDelete(key)}
+                className="text-gray-400 hover:text-red-500"
+              >
+                <TrashIcon className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 } 

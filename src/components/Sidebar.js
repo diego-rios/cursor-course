@@ -15,9 +15,9 @@ export default function Sidebar({ isOpen }) {
   if (!isOpen) return null;
 
   return (
-    <div className="w-60 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
+    <div className="w-60 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
       {/* Logo */}
-      <div className="p-6">
+      <div className="p-4 lg:p-6">
         <Link href="/dashboards" className="flex items-center gap-2">
           <Image
             src="/logo.svg"
@@ -26,12 +26,12 @@ export default function Sidebar({ isOpen }) {
             height={32}
             className="dark:filter-none"
           />
-          <span className="text-xl font-semibold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">KeyHub</span>
+          <span className="text-lg lg:text-xl font-semibold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">KeyHub</span>
         </Link>
       </div>
 
       {/* Account Selector */}
-      <div className="px-4 mb-6">
+      <div className="px-3 lg:px-4 mb-4 lg:mb-6">
         <button className="w-full px-3 py-2 text-sm text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg flex items-center justify-between">
           <span>Personal</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,8 +41,8 @@ export default function Sidebar({ isOpen }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1">
-        <div className="px-3 space-y-1">
+      <nav className="flex-1 px-2">
+        <div className="space-y-1">
           <Link
             href="/dashboards"
             className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -94,8 +94,10 @@ export default function Sidebar({ isOpen }) {
           <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
             <UserIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Diego Ariel Rios Diaz</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+              Diego Ariel Rios Diaz
+            </p>
           </div>
         </div>
       </div>

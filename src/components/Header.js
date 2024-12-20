@@ -26,7 +26,7 @@ export default function Header({ isSidebarOpen, onToggleSidebar }) {
       <div className="flex items-center gap-4">
         <button
           onClick={onToggleSidebar}
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg lg:hidden"
           aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         >
           <Menu className="h-5 w-5 text-gray-600 dark:text-gray-400" />
@@ -34,7 +34,7 @@ export default function Header({ isSidebarOpen, onToggleSidebar }) {
         
         {/* Page Title */}
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-lg lg:text-xl font-semibold text-gray-900 dark:text-white">
             {getPageTitle()}
           </h1>
         </div>
@@ -42,9 +42,9 @@ export default function Header({ isSidebarOpen, onToggleSidebar }) {
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 lg:gap-4">
         {/* System Status */}
-        <div className="flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-2">
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full bg-green-500"></div>
             <span className="text-sm text-gray-600 dark:text-gray-300">Operational</span>
@@ -52,7 +52,7 @@ export default function Header({ isSidebarOpen, onToggleSidebar }) {
         </div>
 
         {/* Social Links */}
-        <div className="flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           <a
             href="https://github.com/diego-rios/cursor-course"
             target="_blank"

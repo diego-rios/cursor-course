@@ -213,42 +213,44 @@ export default function ApiKeysDashboard() {
         generateNewKey={generateNewKey}
       />
 
-      <div className="max-w-[1200px] mx-auto p-8">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <PlanCard apiKeys={apiKeys} />
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-8">
-          <div className="p-6 border-b dark:border-gray-700">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">API Keys</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm mb-6 sm:mb-8">
+          <div className="p-4 sm:p-6 border-b dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
+              <h2 className="text-lg sm:text-xl font-semibold">API Keys</h2>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors w-full sm:w-auto"
               >
                 <PlusIcon className="h-4 w-4" />
                 <span>Create Key</span>
               </button>
             </div>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">
               The key is used to authenticate your requests to the Research API. To learn more, see the documentation page.
             </p>
           </div>
 
-          <ApiKeysTable
-            apiKeys={apiKeys}
-            isLoading={isLoading}
-            visibleKeys={visibleKeys}
-            editingKey={editingKey}
-            editName={editName}
-            setEditName={setEditName}
-            toggleKeyVisibility={toggleKeyVisibility}
-            startEditing={startEditing}
-            saveEdit={saveEdit}
-            setEditingKey={setEditingKey}
-            copyToClipboard={copyToClipboard}
-            initiateDelete={initiateDelete}
-            getExpirationStatus={getExpirationStatus}
-            isKeyExpired={isKeyExpired}
-          />
+          <div className="overflow-x-auto">
+            <ApiKeysTable
+              apiKeys={apiKeys}
+              isLoading={isLoading}
+              visibleKeys={visibleKeys}
+              editingKey={editingKey}
+              editName={editName}
+              setEditName={setEditName}
+              toggleKeyVisibility={toggleKeyVisibility}
+              startEditing={startEditing}
+              saveEdit={saveEdit}
+              setEditingKey={setEditingKey}
+              copyToClipboard={copyToClipboard}
+              initiateDelete={initiateDelete}
+              getExpirationStatus={getExpirationStatus}
+              isKeyExpired={isKeyExpired}
+            />
+          </div>
         </div>
 
         <EmailAlerts
